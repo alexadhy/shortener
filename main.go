@@ -33,6 +33,7 @@ func main() {
 
 	host := os.Getenv("APP_HOST")
 	port := os.Getenv("APP_PORT")
+	domain := os.Getenv("APP_DOMAIN")
 	redisAddr := os.Getenv("APP_REDIS_ADDRESS")
 
 	if redisAddr == "" {
@@ -47,7 +48,11 @@ func main() {
 		port = defaultPort
 	}
 
-	listenAddress := fmt.Sprintf("http://" + defaultHost + ":" + defaultPort)
+	if domain == "" {
+		domain = host
+	}
+
+	listenAddress := fmt.Sprintf("http://" + host + ":" + port)
 
 	store := redis.New(redisAddr)
 	apiSrv := handlers.New(store, listenAddress)
