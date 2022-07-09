@@ -4,7 +4,7 @@ Just a regular URL shortener with Go
 
 Features:
 
-- Redis as storage layer
+- Redis as storage layer (link stored as `messagepack`)
 - Link expiry
 - BLAKE-3 and Base36 for short link generation
 
@@ -42,4 +42,10 @@ $ curl -X POST -H 'Content-Type: application/json' -d '{"url": "https://github.c
 You can have a look at the example `main.go` at the root directory on how to use it as a lib
 
 
+### Libraries Used
 
+- github.com/go-chi/chi
+- github.com/ory/dockertest for testing storage
+- github.com/zeebo/blake3
+- go.uber.org/zap
+- github.com/go-redis/redis/v8
