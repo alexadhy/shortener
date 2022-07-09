@@ -29,7 +29,7 @@ func main() {
 
 	router.Use(middleware.RequestID)
 	router.Use(middlewares.LoggerMW())
-	router.Use(middlewares.Recoverer())
+	router.Use(middleware.Recoverer)
 
 	host := os.Getenv("APP_HOST")
 	port := os.Getenv("APP_PORT")

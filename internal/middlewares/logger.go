@@ -38,6 +38,7 @@ func LoggerMW() func(next http.Handler) http.Handler {
 				if ua != "" {
 					log.WithFields(zap.String("ua", ua))
 				}
+				log.Info()
 			}()
 			next.ServeHTTP(ww, r)
 		}
