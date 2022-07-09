@@ -68,7 +68,6 @@ func (a *API) CreateShortLink(w http.ResponseWriter, r *http.Request) {
 			Data:       apiModel.CreateShortLinkResponse{ShortLinkURL: shortURL},
 		}, w,
 	)
-	return
 }
 
 func (a *API) HandleRedirect(w http.ResponseWriter, r *http.Request) {

@@ -1,5 +1,7 @@
 package redis_test
 
+//lint:file-ignore SA3001 i want to set the amount of operations myself
+
 import (
 	"context"
 	"reflect"

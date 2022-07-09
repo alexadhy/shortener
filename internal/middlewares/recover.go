@@ -12,7 +12,7 @@ import (
 )
 
 // Recoverer middleware uses builtin recover function
-func Recoverer(withLoggingService bool) func(next http.Handler) http.Handler {
+func Recoverer() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
@@ -24,10 +24,6 @@ func Recoverer(withLoggingService bool) func(next http.Handler) http.Handler {
 					}
 
 					printPrettyStack(rvr) // print the debug stack
-					if withLoggingService {
-						//callLoggerService(r)
-					}
-
 					w.WriteHeader(http.StatusInternalServerError)
 				}
 			}()

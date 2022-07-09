@@ -83,7 +83,7 @@ func TestRecoverer(t *testing.T) {
 			buf := &bytes.Buffer{}
 			recovererErrorWriter = buf
 
-			r.Use(Recoverer(false))
+			r.Use(Recoverer())
 			r.HandleFunc("/", tt.handlerFunc)
 
 			ts := httptest.NewServer(r)
