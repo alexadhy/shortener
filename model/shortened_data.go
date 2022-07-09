@@ -4,7 +4,6 @@ package model
 import (
 	"fmt"
 	"math/rand"
-	"net/url"
 	"strings"
 	"time"
 
@@ -45,10 +44,6 @@ const (
 
 // New takes an original URL and returns *ShortenedData and error if any
 func New(orig string) (*ShortenedData, error) {
-	_, err := url.Parse(orig)
-	if err != nil {
-		return nil, err
-	}
 
 	s := &ShortenedData{
 		Orig:   orig,

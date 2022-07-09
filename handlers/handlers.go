@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/alexadhy/shortener/apiModel"
@@ -15,14 +16,16 @@ import (
 
 // API  is the name of the object that will handle all routes
 type API struct {
-	p          persist.Persist
-	hostDomain string
+	p                persist.Persist
+	hostDomain       string
+	domainFilterFunc func(string) bool
 }
 
 // New creates a new instance of the API
 // hostDomain has to be in the form of {SCHEME}://{DOMAIN}.{TLD}
-func New(p persist.Persist, hostDomain string) API {
-	return API{p: p, hostDomain: hostDomain}
+// domainFilterFn can be used to filter website we will shorten link to
+func New(p persist.Persist, hostDomain string, domainFilterFn func(s string) bool) API {
+	return API{p: p, hostDomain: hostDomain, domainFilterFunc: domainFilterFn}
 }
 
 // CreateShortLink will create short link from original URL
@@ -38,6 +41,17 @@ func (a *API) CreateShortLink(w http.ResponseWriter, r *http.Request) {
 	var body apiModel.CreateShortLinkRequest
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		_, _ = render.Render(render.Response[any]{StatusCode: http.StatusBadRequest, Err: err}, w)
+		return
+	}
+
+	u, err := url.Parse(body.OriginalURL)
+	if err != nil {
+		_, _ = render.Render(render.Response[any]{StatusCode: http.StatusBadRequest, Err: err}, w)
+		return
+	}
+
+	if !a.domainFilterFunc(u.Host) {
+		_, _ = render.Render(render.Response[any]{StatusCode: http.StatusBadRequest, Err: errors.New("non-whitelisted domain")}, w)
 		return
 	}
 

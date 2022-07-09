@@ -55,7 +55,9 @@ func main() {
 	listenAddress := fmt.Sprintf("http://" + host + ":" + port)
 
 	store := redis.New(redisAddr)
-	apiSrv := handlers.New(store, listenAddress)
+	apiSrv := handlers.New(store, listenAddress, func(s string) bool {
+		return true
+	})
 
 	router.Post("/", apiSrv.CreateShortLink)
 	router.Get("/*", apiSrv.HandleRedirect)

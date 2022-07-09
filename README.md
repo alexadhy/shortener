@@ -1,4 +1,4 @@
-## Shortener
+# Shortener
 
 Just a regular URL shortener with Go
 
@@ -9,7 +9,7 @@ Features:
 - BLAKE-3 and Base36 for short link generation
 
 
-# Use as standalone Server
+## Use as standalone Server
 
 ```bash
 $ go build .
@@ -30,6 +30,12 @@ Set these environment variables:
 - `APP_PORT` -> http listen port
 
 Then just run the binary
+
+You can then use something like `curl` to shorten link:
+
+```bash
+$ curl -X POST -H 'Content-Type: application/json' -d '{"url": "https://github.com/alexadhy/shortener"}' "http://localhost:8388/"
+```
 
 ## Use as Library
 
