@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/didip/tollbooth/v6"
+	"github.com/didip/tollbooth/v6/limiter"
 	"net/http"
 	"os"
 	"os/signal"
@@ -25,12 +27,6 @@ const (
 )
 
 func main() {
-	router := chi.NewRouter()
-
-	router.Use(middleware.RequestID)
-	router.Use(middlewares.LoggerMW())
-	router.Use(middleware.Recoverer)
-
 	host := os.Getenv("APP_HOST")
 	port := os.Getenv("APP_PORT")
 	domain := os.Getenv("APP_DOMAIN")
@@ -53,6 +49,13 @@ func main() {
 	}
 
 	listenAddress := fmt.Sprintf("http://" + host + ":" + port)
+
+	router := chi.NewRouter()
+	lmt := tollbooth.NewLimiter(3, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
+	router.Use(middleware.RequestID)
+	router.Use(middlewares.LoggerMW())
+	router.Use(middlewares.LimitHandler(lmt))
+	router.Use(middleware.Recoverer)
 
 	store := redis.New(redisAddr)
 	apiSrv := handlers.New(store, listenAddress, func(s string) bool {

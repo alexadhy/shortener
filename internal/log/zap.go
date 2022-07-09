@@ -60,12 +60,14 @@ func (l *zapLogger) initLogger() {
 		encoder = zapcore.NewJSONEncoder(encoderCfg)
 	}
 
+	mu.RLock()
 	zfields := make([]zapcore.Field, len(fields))
 	i := 0
 	for _, v := range fields {
 		zfields[i] = v
 		i++
 	}
+	mu.RUnlock()
 
 	core := zapcore.NewCore(encoder, logWriter, zap.NewAtomicLevelAt(logLevel))
 	logger := zap.New(
