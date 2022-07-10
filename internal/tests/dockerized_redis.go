@@ -1,14 +1,12 @@
 package tests
 
 import (
-	"context"
 	"errors"
 	"time"
 
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 
-	"github.com/alexadhy/shortener/model"
 	"github.com/alexadhy/shortener/persist/redis"
 )
 
@@ -46,12 +44,11 @@ func BootstrapRedis() (*redis.Store, error) {
 	if err = pool.Retry(func() error {
 		time.Sleep(4 * time.Second)
 		addr := res.GetHostPort("6379/tcp")
-		store = redis.New(addr)
-		fakeData, err := model.GenFake(1)
+		store, err = redis.New(addr)
 		if err != nil {
 			return err
 		}
-		return store.Set(context.Background(), fakeData[0])
+		return nil
 	}); err != nil {
 		return nil, err
 	}

@@ -3,11 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/didip/tollbooth/v6"
-	"github.com/didip/tollbooth/v6/limiter"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -30,7 +29,7 @@ func main() {
 	host := os.Getenv("APP_HOST")
 	port := os.Getenv("APP_PORT")
 	domain := os.Getenv("APP_DOMAIN")
-	redisAddr := os.Getenv("APP_REDIS_ADDRESS")
+	redisAddr := os.Getenv("APP_REDIS_ADDRESSES")
 
 	if redisAddr == "" {
 		redisAddr = defaultRedisAddr
@@ -49,15 +48,19 @@ func main() {
 	}
 
 	listenAddress := fmt.Sprintf("http://" + host + ":" + port)
+	redisAddrs := strings.Split(redisAddr, " ")
 
 	router := chi.NewRouter()
-	lmt := tollbooth.NewLimiter(3, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
+	//lmt := tollbooth.NewLimiter(3, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
 	router.Use(middleware.RequestID)
 	router.Use(middlewares.LoggerMW())
-	router.Use(middlewares.LimitHandler(lmt))
+	//router.Use(middlewares.LimitHandler(lmt))
 	router.Use(middleware.Recoverer)
 
-	store := redis.New(redisAddr)
+	store, err := redis.New(redisAddrs...)
+	if err != nil {
+		log.Fatalf("redis.New(): %v", err)
+	}
 	apiSrv := handlers.New(store, listenAddress, func(s string) bool {
 		return true
 	})
@@ -96,7 +99,7 @@ func main() {
 
 	// Run the server
 	log.Infof("Listening to HTTP requests at %s", listenAddress)
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}

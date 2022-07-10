@@ -16,8 +16,8 @@ var (
 
 // zapLogger is a standard logger using zap
 type zapLogger struct {
-	logLevel zapcore.Level
 	*zap.SugaredLogger
+	logLevel zapcore.Level
 }
 
 // new creates Zap Logger constructor
@@ -57,7 +57,7 @@ func (l *zapLogger) initLogger() {
 	}
 
 	mu.RLock()
-	zfields := make([]zapcore.Field, len(fields))
+	zfields := make([]zapcore.Field, len(fields), len(fields))
 	i := 0
 	for _, v := range fields {
 		zfields[i] = v

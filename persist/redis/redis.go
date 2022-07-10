@@ -11,7 +11,7 @@ import (
 
 // Store implements persist.Persist
 type Store struct {
-	rc *redis.Client
+	rc redis.UniversalClient
 }
 
 // Get the value of a shortened url from redis
@@ -46,15 +46,20 @@ func (s *Store) Set(ctx context.Context, data *model.ShortenedData) error {
 }
 
 // Expire will not do anything on redis since we set the expiry from redis.SetEX
-func (s *Store) Expire(ctx context.Context) (int, error) {
+func (s *Store) Expire(_ context.Context) (int, error) {
 	return 0, nil
 }
 
 // New creates a new instance of *Store
-func New(address string) *Store {
-	rc := redis.NewClient(&redis.Options{
-		Addr: address,
-		DB:   0,
+func New(addresses ...string) (*Store, error) {
+	rc := redis.NewUniversalClient(&redis.UniversalOptions{
+		Addrs: addresses,
+		DB:    0,
 	})
-	return &Store{rc}
+
+	if err := rc.Ping(context.Background()).Err(); err != nil {
+		return nil, err
+	}
+
+	return &Store{rc}, nil
 }
