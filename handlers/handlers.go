@@ -5,13 +5,13 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/alexadhy/shortener/apiModel"
 	"github.com/alexadhy/shortener/internal/log"
 	"github.com/alexadhy/shortener/model"
 	"github.com/alexadhy/shortener/persist"
 	"github.com/alexadhy/shortener/render"
+	"github.com/go-chi/chi/v5"
 )
 
 // API  is the name of the object that will handle all routes
@@ -89,8 +89,9 @@ func (a *API) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 		handleErr(http.StatusBadRequest, errors.New("invalid request method"), w)
 		return
 	}
+
 	// get the shortened link
-	key := strings.Trim(r.URL.EscapedPath(), " /")
+  key := chi.URLParam(r, "id")
 	sd, err := a.p.Get(r.Context(), key)
 	if err != nil {
 		handleErr(http.StatusNotFound, errors.New("invalid link provider"), w)

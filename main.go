@@ -63,7 +63,7 @@ func main() {
 	})
 
 	router.Post("/", apiSrv.CreateShortLink)
-	router.Get("/*", apiSrv.HandleRedirect)
+	router.Get("/{id}", apiSrv.HandleRedirect)
 
 	server := http.Server{Addr: defaultHost + ":" + defaultPort, Handler: router}
 

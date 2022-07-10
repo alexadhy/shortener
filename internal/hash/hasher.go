@@ -1,7 +1,7 @@
 package hash
 
 import (
-	"fmt"
+	"encoding/hex"
 	"math/big"
 
 	"github.com/zeebo/blake3"
@@ -11,7 +11,7 @@ func Hash(s string) (string, string) {
 	h := blake3.New()
 	h.WriteString(s)
 	x := h.Sum(nil)
-	return fmt.Sprintf("%x", x), encode(x)[:8]
+	return hex.EncodeToString(x), encode(x)[:8]
 }
 
 var (

@@ -9,13 +9,9 @@ import (
 )
 
 var (
-	globalLog = &sync.Pool{
-		New: func() any {
-			return new(zapcore.InfoLevel)
-		},
-	}
-	fields = map[string]zapcore.Field{}
-	mu     sync.RWMutex
+	globalLog = &sync.Pool{}
+	fields    = map[string]zapcore.Field{}
+	mu        sync.RWMutex
 )
 
 // zapLogger is a standard logger using zap
@@ -37,7 +33,7 @@ func (l *zapLogger) initLogger() {
 	logLevel := l.logLevel
 	var logWriter zapcore.WriteSyncer
 	var encoderCfg zapcore.EncoderConfig
-	logWriter = zapcore.AddSync(os.Stderr)
+	logWriter = zapcore.AddSync(os.Stdout)
 
 	var encoder zapcore.Encoder
 
@@ -88,69 +84,82 @@ func WithFields(args ...zapcore.Field) {
 		fields[a.Key] = a
 	}
 	mu.Unlock()
+	zl := new(zapcore.InfoLevel)
+	zl.initLogger()
+	globalLog.Put(zl)
+}
+
+func getZl() *zapLogger {
+	zl, ok := globalLog.Get().(*zapLogger)
+	if !ok {
+		zl = new(zapcore.InfoLevel)
+		zl.initLogger()
+		globalLog.Put(zl)
+	}
+	return zl
 }
 
 func Debug(args ...any) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Debug(args...)
 }
 
 func Debugf(template string, args ...any) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Debugf(template, args...)
 }
 
 func Fatal(args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Fatal(args...)
 }
 
 func Fatalf(template string, args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Fatalf(template, args...)
 }
 
 func Info(args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Info(args...)
 }
 
 func Infof(template string, args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Infof(template, args...)
 }
 
 func Print(args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Info(args...)
 }
 
 func Println(args ...any) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Info(args...)
 }
 
 func Printf(template string, args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Infof(template, args...)
 }
 
 func Warn(args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Warn(args...)
 }
 
 func Warnf(template string, args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Warnf(template, args...)
 }
 
 func Error(args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Error(args...)
 }
 
 func Errorf(template string, args ...interface{}) {
-	zl := globalLog.Get().(*zapLogger)
+	zl := getZl()
 	zl.Errorf(template, args...)
 }

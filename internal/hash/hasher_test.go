@@ -1,6 +1,9 @@
 package hash
 
-import "testing"
+import (
+	"strconv"
+	"testing"
+)
 
 func TestHash(t *testing.T) {
 	tests := []struct {
@@ -31,5 +34,13 @@ func TestHash(t *testing.T) {
 				t.Fatalf("expecting %s, got: %s", tt.expectedShort, short)
 			}
 		})
+	}
+}
+
+func BenchmarkHash(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Hash("https://ohmyhome.sg/console/user/" + strconv.Itoa(i))
 	}
 }
