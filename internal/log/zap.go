@@ -57,7 +57,7 @@ func (l *zapLogger) initLogger() {
 	}
 
 	mu.RLock()
-	zfields := make([]zapcore.Field, len(fields), len(fields))
+	zfields := make([]zapcore.Field, len(fields))
 	i := 0
 	for _, v := range fields {
 		zfields[i] = v
