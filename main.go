@@ -12,6 +12,7 @@ import (
 	"github.com/didip/tollbooth/v6/limiter"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 
 	"github.com/alexadhy/shortener/config"
 	"github.com/alexadhy/shortener/handlers"
@@ -26,11 +27,20 @@ func main() {
 	})
 
 	router := chi.NewRouter()
-	lmt := tollbooth.NewLimiter(5, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
+	lmt := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{DefaultExpirationTTL: 24 * 7 * time.Hour})
 	router.Use(middleware.RequestID)
 	router.Use(middlewares.LoggerMW())
 	router.Use(middlewares.LimitHandler(lmt))
 	router.Use(middleware.Recoverer)
+
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	//store, err := redis.New(opts.Redis.Addresses...)
 	//if err != nil {

@@ -6,8 +6,8 @@ require (
 	github.com/dgraph-io/badger/v3 v3.2103.2
 	github.com/didip/tollbooth/v6 v6.1.2
 	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-chi/cors v1.2.1
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/go-redis/redismock/v8 v8.0.6
 	github.com/stretchr/testify v1.7.1
 	github.com/tinylib/msgp v1.1.6
 	github.com/zeebo/blake3 v0.2.3
@@ -28,12 +28,12 @@ require (
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/flatbuffers v1.12.1 // indirect
+	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/klauspost/compress v1.12.3 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.12 // indirect
 	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stretchr/objx v0.1.0 // indirect
 	go.opencensus.io v0.22.5 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
