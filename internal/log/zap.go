@@ -20,6 +20,10 @@ type zapLogger struct {
 	logLevel zapcore.Level
 }
 
+func (l *zapLogger) Warningf(s string, i ...interface{}) {
+	l.Warnf(s, i...)
+}
+
 // new creates Zap Logger constructor
 func new(level zapcore.Level) *zapLogger {
 	zl := &zapLogger{logLevel: level}

@@ -26,7 +26,7 @@ func main() {
 	})
 
 	router := chi.NewRouter()
-	lmt := tollbooth.NewLimiter(3, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
+	lmt := tollbooth.NewLimiter(5, &limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})
 	router.Use(middleware.RequestID)
 	router.Use(middlewares.LoggerMW())
 	router.Use(middlewares.LimitHandler(lmt))

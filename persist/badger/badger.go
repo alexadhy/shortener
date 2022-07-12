@@ -3,6 +3,7 @@ package badger
 import (
 	"context"
 	"errors"
+	"github.com/alexadhy/shortener/internal/log"
 	"os"
 	"time"
 
@@ -74,7 +75,8 @@ func New(pth string) (*Store, error) {
 	}
 
 	opt := badger.DefaultOptions(pth).
-		WithBlockCacheSize(100 << 20)
+		WithBlockCacheSize(100 << 20).
+		WithLogger(log.New())
 	db, err := badger.Open(opt)
 	if err != nil {
 		return nil, err
