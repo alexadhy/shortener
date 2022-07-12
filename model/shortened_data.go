@@ -40,14 +40,18 @@ type ShortenedData struct {
 
 const (
 	defaultExpiry = 24 * 30 * time.Hour
+	minExpiry     = 5 * time.Minute
 )
 
 // New takes an original URL and returns *ShortenedData and error if any
-func New(orig string) (*ShortenedData, error) {
+func New(orig string, ttl time.Duration) (*ShortenedData, error) {
+	if ttl < minExpiry {
+		ttl = defaultExpiry
+	}
 
 	s := &ShortenedData{
 		Orig:   orig,
-		Expiry: time.Now().UTC().Add(defaultExpiry),
+		Expiry: time.Now().UTC().Add(ttl),
 	}
 
 	sum, short := hash.Hash(orig)
@@ -64,7 +68,7 @@ func GenFake(n int) ([]*ShortenedData, error) {
 	res := make([]*ShortenedData, n)
 
 	for i := 0; i < n; i++ {
-		sd, err := New(genFakeURL())
+		sd, err := New(genFakeURL(), 10*time.Minute)
 		if err != nil {
 			return nil, err
 		}

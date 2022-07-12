@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/alexadhy/shortener/apiModel"
 	"github.com/alexadhy/shortener/internal/log"
@@ -19,13 +20,14 @@ type API struct {
 	p                persist.Persist
 	hostDomain       string
 	domainFilterFunc func(string) bool
+	expiry           time.Duration
 }
 
 // New creates a new instance of the API
 // hostDomain has to be in the form of {SCHEME}://{DOMAIN}.{TLD}
 // domainFilterFn can be used to filter website we will shorten link to
-func New(p persist.Persist, hostDomain string, domainFilterFn func(s string) bool) API {
-	return API{p: p, hostDomain: hostDomain, domainFilterFunc: domainFilterFn}
+func New(p persist.Persist, hostDomain string, defaultExpiry time.Duration, domainFilterFn func(s string) bool) API {
+	return API{p: p, hostDomain: hostDomain, expiry: defaultExpiry, domainFilterFunc: domainFilterFn}
 }
 
 // CreateShortLink will create short link from original URL
@@ -55,7 +57,7 @@ func (a *API) CreateShortLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	shortData, err := model.New(body.OriginalURL)
+	shortData, err := model.New(body.OriginalURL, a.expiry)
 	if err != nil {
 		_, _ = render.Render(render.Response[any]{StatusCode: http.StatusBadRequest, Err: err}, w)
 		return
@@ -91,7 +93,7 @@ func (a *API) HandleRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get the shortened link
-  key := chi.URLParam(r, "id")
+	key := chi.URLParam(r, "id")
 	sd, err := a.p.Get(r.Context(), key)
 	if err != nil {
 		handleErr(http.StatusNotFound, errors.New("invalid link provider"), w)

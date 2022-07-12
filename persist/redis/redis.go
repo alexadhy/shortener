@@ -63,3 +63,11 @@ func New(addresses ...string) (*Store, error) {
 
 	return &Store{rc}, nil
 }
+
+func NewTest(rdb redis.UniversalClient) *Store {
+	return &Store{rc: rdb}
+}
+
+func (s *Store) Shutdown() error {
+	return s.rc.Close()
+}

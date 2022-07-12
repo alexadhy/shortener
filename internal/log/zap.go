@@ -89,7 +89,7 @@ func WithFields(args ...zapcore.Field) {
 	globalLog.Put(zl)
 }
 
-func getZl() *zapLogger {
+func New() *zapLogger {
 	zl, ok := globalLog.Get().(*zapLogger)
 	if !ok {
 		zl = new(zapcore.InfoLevel)
@@ -100,66 +100,66 @@ func getZl() *zapLogger {
 }
 
 func Debug(args ...any) {
-	zl := getZl()
+	zl := New()
 	zl.Debug(args...)
 }
 
 func Debugf(template string, args ...any) {
-	zl := getZl()
+	zl := New()
 	zl.Debugf(template, args...)
 }
 
 func Fatal(args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Fatal(args...)
 }
 
 func Fatalf(template string, args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Fatalf(template, args...)
 }
 
 func Info(args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Info(args...)
 }
 
 func Infof(template string, args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Infof(template, args...)
 }
 
 func Print(args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Info(args...)
 }
 
 func Println(args ...any) {
-	zl := getZl()
+	zl := New()
 	zl.Info(args...)
 }
 
 func Printf(template string, args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Infof(template, args...)
 }
 
 func Warn(args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Warn(args...)
 }
 
 func Warnf(template string, args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Warnf(template, args...)
 }
 
 func Error(args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Error(args...)
 }
 
 func Errorf(template string, args ...interface{}) {
-	zl := getZl()
+	zl := New()
 	zl.Errorf(template, args...)
 }

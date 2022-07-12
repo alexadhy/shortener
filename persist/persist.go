@@ -14,4 +14,6 @@ type Persist interface {
 	Set(ctx context.Context, data *model.ShortenedData) error
 	// Expire will evict the data of a shortened url from the persistence layer
 	Expire(ctx context.Context) (int, error)
+	// Shutdown clean up connection
+	Shutdown() error
 }
