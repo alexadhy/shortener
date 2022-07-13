@@ -4,7 +4,8 @@ Just a regular URL shortener with Go
 
 Features:
 
-- Redis as storage layer (link stored as `messagepack`)
+- Redis as storage layer (link stored as `messagepack`) 
+- Badger as storage layer alternative (currently used in main)
 - Link expiry
 - BLAKE-3 and Base36 for short link generation
 
@@ -14,20 +15,6 @@ Features:
 ```bash
 $ go build .
 ```
-
-Run redis, if with docker then:
-
-```bash
-$ docker run -d -p 6379:6379 --name redis redis:7
-
-```
-
-Set these environment variables:
-
-- `APP_HOST` -> host of the app (localhost normally)
-- `APP_DOMAIN` -> domain of the app
-- `APP_REDIS_ADDRESS` -> address to redis i.e. `localhost:6379`
-- `APP_PORT` -> http listen port
 
 Then just run the binary
 
